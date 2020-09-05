@@ -1,6 +1,6 @@
 {
   "name": "ext-json-lib",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,8 +9,9 @@
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "publisher": "nicklvsa",
   "author": "Nick Gerancher <nick@nicksdesk.com>",
-  "homepage": "https://github.com/nicklvsa/ext-json",
+  "homepage": "https://github.com/nicklvsa/ext-jsonweb-lib",
   "license": "ISC",
   "devDependencies": {
     "typescript": "^4.0.2"
