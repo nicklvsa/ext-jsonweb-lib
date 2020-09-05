@@ -5,6 +5,7 @@
 ```javascript
 const ExtJSON = require('ext-json-lib');
 
+// example json - usually some definitions
 const apiJSON = JSON.parse(`
     {
         ">>example": "123",
@@ -13,6 +14,7 @@ const apiJSON = JSON.parse(`
     }
 `);
 
+// example json
 const userJSON1 = JSON.parse(`
     {
         "hello": "good afternoon {{name}}",
@@ -20,6 +22,7 @@ const userJSON1 = JSON.parse(`
     }
 `);
 
+// example json
 const userJSON2 = JSON.parse(`
     {
         "pie": "lol",
@@ -30,8 +33,10 @@ const userJSON2 = JSON.parse(`
     }
 `);
 
-const ext = new ExtJSON.ExtJSON(apiJSON);
+// initialize the new ExtJSON class
+const ext = new ExtJSON(apiJSON);
 
+// handle the json
 const response = ext.handleIncomingJSON(userJSON1, userJSON2);
 console.log(response.content);
 ```
