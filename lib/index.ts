@@ -119,6 +119,4 @@ class ExtJSON {
     }
 }
 
-export = {
-    ExtJSON: ExtJSON,
-}
+export = ExtJSON;
