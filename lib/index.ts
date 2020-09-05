@@ -2,7 +2,7 @@ import { v4 } from 'uuid';
 
 type Nullable<T> = T | null;
 
-export interface JSONResponse {
+interface JSONResponse {
     request_id: string;
     content: {};
 }
@@ -10,10 +10,13 @@ export interface JSONResponse {
 class ExtJSON {
 
     private apiJSON: any = {};
-    private responseJSON: Nullable<JSONResponse> = {} as JSONResponse;
 
-    public async handleIncomingJSON(...objects: any[]): Promise<Nullable<JSONResponse>> {
-        const flat = this.flatten(await this.getContainedObjects(objects));
+    constructor(apiJSON?: any) {
+        this.apiJSON = apiJSON;
+    }
+
+    public handleIncomingJSON(...objects: any[]): Nullable<JSONResponse> {
+        const flat = this.flatten(this.getContainedObjects(objects));
         if (!flat) {
             return null;
         }
@@ -25,7 +28,7 @@ class ExtJSON {
         const possibleContainers: string[] = [];
 
         for (let d in flat) {
-            if (d.startsWith('__ext__json__')) delete flat[d]; // TODO: possibly use to configure parsing options
+            if (d.startsWith('__ext_json__')) delete flat[d]; // TODO: possibly use to configure parsing options
             if (d.startsWith('//') || (d.split('.').length > 1 && d.split('.')[1].startsWith('//'))) delete flat[d];
             if (d.startsWith('>>')) {
                 const cleaned = d.substring(2);
@@ -62,14 +65,13 @@ class ExtJSON {
             content: JSON.stringify(this.unflatten(flat), null, '\t'),
         };
 
-        this.responseJSON = response;
         return response;
     }
 
-    private async getContainedObjects(...objects: any[]): Promise<{}> {
+    private getContainedObjects(objects: any[]): any {
         return objects.reduce((res: any, cur: any) => {
-            return Object.assign(res, {...this.apiJSON, ...cur});
-        }, {});
+            return Object.assign(res, cur);
+        }, {...this.apiJSON});
     }
 
     private unflatten(data: any): {} {
@@ -115,10 +117,8 @@ class ExtJSON {
     public set serverJSON(data: any) {
         this.apiJSON = data;
     }
-
-    public get response(): Nullable<JSONResponse> {
-        return this.responseJSON;
-    }
 }
 
-export default ExtJSON;
+export = {
+    ExtJSON: ExtJSON,
+}
