@@ -40,6 +40,8 @@ class ExtJSON {
             possibleContainers.push(`{{${d}}}`);
         }
         
+        const test: string[] = [];
+
         for (let d in flat) {
             try {
                 possibleContainers.forEach((container: string) => {
