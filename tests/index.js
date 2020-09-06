@@ -3,7 +3,7 @@ const ExtJSON = require('ext-json-lib');
 const apiData = JSON.parse(`
     {
         ">>first_name": "Nick",
-        ">>last_name": "Gerancher",
+        ">>last_name": "Nicklvsa",
         ">>age": "18"
     }
 `);

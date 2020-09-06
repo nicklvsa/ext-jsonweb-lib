@@ -16,14 +16,28 @@ class ExtJSON {
     }
 
     public handleIncomingJSON(...objects: any[]): Nullable<JSONResponse> {
-        const flat = this.flatten(this.getContainedObjects(objects));
+        const helpers = new Helpers();
+        const flat = helpers.flatten(this.getContainedObjects(objects));
         if (!flat) {
             return null;
         }
-        return this.runPreprocessor(flat);
+        return helpers.runPreprocessor(flat);
     }
 
-    private runPreprocessor(flat: any): Nullable<JSONResponse> {
+    private getContainedObjects(objects: any[]): any {
+        return objects.reduce((res: any, cur: any) => {
+            return Object.assign(res, cur);
+        }, {...this.apiJSON});
+    }
+
+    public set serverJSON(data: any) {
+        this.apiJSON = data;
+    }
+}
+
+class Helpers {
+
+    public runPreprocessor(flat: any): Nullable<JSONResponse> {
         const specialToDelete: string[] = [];
         const possibleContainers: string[] = [];
 
@@ -51,7 +65,6 @@ class ExtJSON {
                     }
                 });
             } catch (e) {
-                // some error occurred
                 return null;
             }
         }
@@ -68,13 +81,7 @@ class ExtJSON {
         return response;
     }
 
-    private getContainedObjects(objects: any[]): any {
-        return objects.reduce((res: any, cur: any) => {
-            return Object.assign(res, cur);
-        }, {...this.apiJSON});
-    }
-
-    private unflatten(data: any): {} {
+    public unflatten(data: any): {} {
         let result: any = {}, cur: any, prop: string, idx: number, last: number, temp: string;
         if (Object(data) !== data || Array.isArray(data)) return data;
         for (const p in data) {
@@ -91,7 +98,7 @@ class ExtJSON {
         return result[''];
     }
 
-    private flatten(data: any): {} {
+    public flatten(data: any): {} {
         let result: any = {};
         const recur = (cur: any, prop: any): any => {
             if (Object(cur) !== cur) {
@@ -114,9 +121,6 @@ class ExtJSON {
         return result;
     }
 
-    public set serverJSON(data: any) {
-        this.apiJSON = data;
-    }
 }
 
 export = ExtJSON;
