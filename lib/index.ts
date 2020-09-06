@@ -1,6 +1,6 @@
 import { v4 } from 'uuid';
 
-type Nullable<T> = T | null;
+type Nullable<T> = T | null | undefined;
 
 interface JSONResponse {
     request_id: string;
@@ -8,35 +8,17 @@ interface JSONResponse {
 }
 
 class ExtJSON {
-
-    private apiJSON: any = {};
-
-    constructor(apiJSON?: any) {
-        this.apiJSON = apiJSON;
-    }
-
-    public handleIncomingJSON(...objects: any[]): Nullable<JSONResponse> {
-        const helpers = new Helpers();
-        const flat = helpers.flatten(this.getContainedObjects(objects));
+    public static handleIncomingJSON(baseJSON: any = {}, ...objects: any[]): Nullable<JSONResponse> {
+        const helpers: Helpers = new Helpers();
+        const flat: any = helpers.getContainedObjects(objects, baseJSON);
         if (!flat) {
             return null;
         }
         return helpers.runPreprocessor(flat);
     }
-
-    private getContainedObjects(objects: any[]): any {
-        return objects.reduce((res: any, cur: any) => {
-            return Object.assign(res, cur);
-        }, {...this.apiJSON});
-    }
-
-    public set serverJSON(data: any) {
-        this.apiJSON = data;
-    }
 }
 
 class Helpers {
-
     public runPreprocessor(flat: any): Nullable<JSONResponse> {
         const specialToDelete: string[] = [];
         const possibleContainers: string[] = [];
@@ -45,7 +27,7 @@ class Helpers {
             if (d.startsWith('__ext_json__')) delete flat[d]; // TODO: possibly use to configure parsing options
             if (d.startsWith('//') || (d.split('.').length > 1 && d.split('.')[1].startsWith('//'))) delete flat[d];
             if (d.startsWith('>>')) {
-                const cleaned = d.substring(2);
+                const cleaned: string = d.substring(2);
                 flat[cleaned] = flat[d];
                 specialToDelete.push(cleaned);
                 possibleContainers.push(`{{${cleaned}}}`);
@@ -58,7 +40,7 @@ class Helpers {
             try {
                 possibleContainers.forEach((container: string) => {
                     if (flat[d].includes(container)) {
-                        const found = possibleContainers.find((e: string) => e === container);
+                        const found: Nullable<string> = possibleContainers.find((e: string) => e === container);
                         if (found) {
                             flat[d] = flat[d].replace(container, flat[found.replace('{{', '').replace('}}', '').trim()]);
                         }
@@ -81,7 +63,13 @@ class Helpers {
         return response;
     }
 
-    public unflatten(data: any): {} {
+    public getContainedObjects(objects: any[], apiJSON: any): any {
+        return this.flatten(objects.reduce((res: any, cur: any) => {
+            return Object.assign(res, cur);
+        }, {...apiJSON}));
+    }
+
+    private unflatten(data: any): {} {
         let result: any = {}, cur: any, prop: string, idx: number, last: number, temp: string;
         if (Object(data) !== data || Array.isArray(data)) return data;
         for (const p in data) {
@@ -98,7 +86,7 @@ class Helpers {
         return result[''];
     }
 
-    public flatten(data: any): {} {
+    private flatten(data: any): {} {
         let result: any = {};
         const recur = (cur: any, prop: any): any => {
             if (Object(cur) !== cur) {
@@ -120,7 +108,6 @@ class Helpers {
         recur(data, '');
         return result;
     }
-
 }
 
-export = ExtJSON;
+export = module.exports = ExtJSON;
