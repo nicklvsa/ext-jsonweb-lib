@@ -3,7 +3,7 @@ import { v4 } from 'uuid';
 type Nullable<T> = T | null | undefined;
 
 interface JSONResponse {
-    request_id: string;
+    response_id: string;
     content: {};
 }
 
@@ -56,7 +56,7 @@ class Helpers {
         }
 
         const response: JSONResponse = {
-            request_id: v4(),
+            response_id: v4(),
             content: JSON.stringify(this.unflatten(flat), null, '\t'),
         };
 
