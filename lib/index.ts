@@ -39,7 +39,7 @@ class ExtJSON {
             }
             possibleContainers.push(`{{${d}}}`);
         }
-        
+
         for (let d in flat) {
             try {
                 possibleContainers.forEach((container: string) => {
