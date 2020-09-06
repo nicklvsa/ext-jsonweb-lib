@@ -5,38 +5,37 @@
 ```javascript
 const ExtJSON = require('ext-json-lib');
 
-// example json - usually some definitions
-const apiJSON = JSON.parse(`
+const baseData = JSON.parse(`
     {
-        ">>example": "123",
-        ">>test": "abc",
-        ">>name": "Nick"
+        ">>first_name": "Nick",
+        ">>last_name": "Nicklvsa",
+        ">>age": "18"
     }
 `);
 
-// example json
-const userJSON1 = JSON.parse(`
+const exampleData0 = JSON.parse(`
     {
-        "hello": "good afternoon {{name}}",
-        "testing": "{{test}}, {{example}}"
+        "user": {
+            "name": "Mr. {{first_name}} {{last_name}}",
+            "age": "{{age}} years old",
+            "str": "{{user.name}} is {{user.age}}"
+        },
+        "hello": "world",
+        "foo": "bar"
     }
 `);
 
-// example json
-const userJSON2 = JSON.parse(`
+const exampleData1 = JSON.parse(`
     {
-        "pie": "lol",
-        "cool": {
-            "foo": "bar",
-            "yo": "{{name}}"
-        }
+        "example0": "Hello {{user.name}}",
+        "example1": "Testing: {{user.str}}"
     }
 `);
 
-// initialize the new ExtJSON class
-const ext = new ExtJSON(apiJSON);
+// First argument of `handleIncomingJSON` is able to represent some base object
 
-// handle the json
-const response = ext.handleIncomingJSON(userJSON1, userJSON2);
-console.log(response.content);
+const data = ExtJSON.handleIncomingJSON(baseData, exampleData0, exampleData1);
+// or: 
+// const data = ExtJSON.handleIncomingJSON({}, baseData, exampleData0, exampleData1);
+console.log(data.content);
 ```

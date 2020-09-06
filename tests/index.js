@@ -1,6 +1,6 @@
 const ExtJSON = require('ext-json-lib');
 
-const apiData = JSON.parse(`
+const baseData = JSON.parse(`
     {
         ">>first_name": "Nick",
         ">>last_name": "Nicklvsa",
@@ -27,7 +27,5 @@ const exampleData1 = JSON.parse(`
     }
 `);
 
-const ext = new ExtJSON(apiData);
-const data = ext.handleIncomingJSON(exampleData0, exampleData1);
-
+const data = ExtJSON.handleIncomingJSON(baseData, exampleData0, exampleData1);
 console.log(data.content);
