@@ -8,6 +8,7 @@ interface JSONResponse {
 }
 
 class ExtJSON {
+    // this will return either null or the preprocessed json response
     public static handleIncomingJSON(baseJSON: any = {}, ...objects: any[]): Nullable<JSONResponse> {
         const helpers: Helpers = new Helpers();
         const flat: any = helpers.getContainedObjects(objects, baseJSON);
@@ -47,6 +48,7 @@ class Helpers {
                     }
                 });
             } catch (e) {
+                console.log(`Unable to do string replacement: Error ${e}`);
                 return null;
             }
         }
@@ -57,7 +59,7 @@ class Helpers {
 
         const response: JSONResponse = {
             response_id: v4(),
-            content: JSON.stringify(this.unflatten(flat), null, '\t'),
+            content: JSON.stringify(this.unflatten(flat) ?? {}, null, '\t'),
         };
 
         return response;
